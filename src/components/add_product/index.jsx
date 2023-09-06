@@ -1,13 +1,11 @@
 /* eslint-disable react/prop-types */
 import { Formik } from 'formik';
-import { useRef } from 'react';
  
  const AddProduct = (props) => {
     const {
         handleProductData
     } = props;
 
-    const blob = useRef(null);
 
     return (
         <div className='flex flex-col gap-6 flex-grow'>
@@ -24,14 +22,13 @@ import { useRef } from 'react';
                 if (!values.price) {
                     errors.price = 'Price is required.';
                 }
-                if (!blob) {
+                if (!values.image) {
                     errors.image = 'Image file is required.';
                     // To-Do: We will need to validate file MIME Type with required formats
                 }
                 return errors;
             }}
             onSubmit={(values, { setSubmitting }) => {
-                values.image = blob.current
                 handleProductData(values, setSubmitting)
             }}
             validateOnChange={false}
@@ -102,21 +99,12 @@ import { useRef } from 'react';
                         <div className='flex flex-col gap-2 flex-grow'>
                             <input
                                 className="border border-blue-600 w-full p-2"
-                                type="file"
+                                type="text"
                                 name="image"
-                                onChange={(e)=>{
-                                    const fr = new FileReader()
-                                    const file = e.target.files[0]
-                                    fr.readAsArrayBuffer(file)
-                                    fr.onload = function() {
-                                        blob.current = new Blob([fr.result])
-                                    }
-                                    handleChange(e)
-                                }}
+                                onChange={handleChange}
                                 onBlur={handleBlur}
                                 value={values.image}
                                 autoComplete='off'
-                                accept="image/*"
                             />
                             <p className=' text-red-600'>
                                 {errors.image && touched.image && errors.image}
